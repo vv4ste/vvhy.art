@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vvhy.art</title>
+  <link rel="icon" href="favicon-placeholder.ico" />
+  <style>
+    :root {
+      --bg: #000;
+      --fg: #fff;
+      --muted: rgba(255,255,255,0.72);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: monospace;
+    }
+
+    body {
+      background: #000;
+    }
+
+    .site {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      background: #000;
+    }
+
+    header,
+    footer {
+      position: relative;
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 26px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      line-height: 1;
+      pointer-events: auto;
+    }
+
+    header::after,
+    footer::before {
+      content: "";
+      position: absolute;
+      left: 26px;
+      right: 26px;
+      height: 1px;
+      background: rgba(255,255,255,0.16);
+    }
+
+    header::after {
+      bottom: 0;
+    }
+
+    footer::before {
+      top: 0;
+    }
+
+    .brand,
+    .status,
+    .footer-right {
+      white-space: nowrap;
+    }
+
+    .brand,
+    .status,
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .brand:hover,
+    .status:hover,
+    footer a:hover {
+      color: #fff;
+    }
+
+    .footer-left {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      max-width: min(72vw, 1000px);
+    }
+
+    .footer-right {
+      margin-left: 20px;
+      flex: 0 0 auto;
+    }
+
+    main {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 0;
+    }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-copy {
+      position: absolute;
+      top: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      text-align: center;
+      pointer-events: none;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .hero-copy h1 {
+      margin: 0 0 10px;
+      font-size: 14px;
+      font-weight: 400;
+      color: #fff;
+    }
+
+    .hero-copy p {
+      margin: 0;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .cube-halo {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: min(82vmin, 860px);
+      height: min(82vmin, 860px);
+      pointer-events: none;
+      z-index: 3;
+      background: radial-gradient(circle at center,
+        rgba(0,0,0,1) 0 10%,
+        rgba(0,0,0,0.98) 10% 14%,
+        rgba(0,0,0,0.92) 14% 18%,
+        rgba(0,0,0,0.7) 18% 21%,
+        rgba(0,0,0,0.3) 21% 23%,
+        rgba(0,0,0,0.06) 23% 24%,
+        rgba(0,0,0,0) 24% 100%);
+      filter: blur(1px);
+    }
+
+    #bgScreen0,
+    #bgScreen1,
+    #bgScreen2,
+    #screen {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      display: block;
+      background: transparent;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    #bgScreen0,
+    #bgScreen1,
+    #bgScreen2 {
+      width: min(82vmin, 860px);
+      height: min(82vmin, 860px);
+      transform: scale(5);
+      opacity: 0.1;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    #screen {
+      width: min(82vmin, 860px);
+      height: min(82vmin, 860px);
+      cursor: grab;
+      z-index: 4;
+    }
+
+    #screen.dragging {
+      cursor: grabbing;
+    }
+
+    .scanlines,
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .scanlines {
+      opacity: 0.12;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.08) 0px,
+        rgba(255,255,255,0.08) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+      mix-blend-mode: screen;
+    }
+
+    .vignette {
+      background: radial-gradient(circle at center, transparent 50%, rgba(0,0,0,0.42) 100%);
+    }
+
+    @media (max-width: 700px) {
+      header,
+      footer {
+        padding: 14px 16px;
+        font-size: 10px;
+        letter-spacing: 0.14em;
+      }
+
+      header::after,
+      footer::before {
+        left: 16px;
+        right: 16px;
+      }
+
+      .hero-copy {
+        top: 18px;
+        width: calc(100% - 32px);
+      }
+
+      .hero-copy h1 {
+        font-size: 12px;
+      }
+
+      .hero-copy p {
+        font-size: 9px;
+      }
+
+      .cube-halo,
+      #bgScreen0,
+      #bgScreen1,
+      #bgScreen2,
+      #screen {
+        width: min(88vmin, 88vw);
+        height: min(88vmin, 88vw);
+      }
+
+      .footer-left {
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header>
+      <a class="brand" href="">VVHY.ART</a>
+      <a class="status" href="https://www.instagram.com/vv4ste/">???</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <h1>ROTATE THE CUBE PLS</h1>
+          <p>AND CLICK THE LIINK (HOPEFULLY IT ALL WORKS, STILL WIP)</p>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="bgScreen2" width="220" height="220" aria-hidden="true"></canvas>
+          <canvas id="bgScreen1" width="220" height="220" aria-hidden="true"></canvas>
+          <canvas id="bgScreen0" width="220" height="220" aria-hidden="true"></canvas>
+          <div class="cube-halo" aria-hidden="true"></div>
+          <canvas id="screen" width="220" height="220" aria-label="Retro 3D cube navigation"></canvas>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <nav class="footer-left" aria-label="Footer links">
+        <a href="https://vvhy.arts">ABOUT</a>
+        <a href="https://www.instagram.com/vvhyami/">INSTAGRAM</a>
+        <a href="https://www.youtube.com/@vvhyami">YOUTUBE</a>
+        <a href="https://www.tiktok.com/@vvhyami">TIKTOK</a>
+        <a href="https://discord.gg/jgmZStGXeZ">DISCORD</a>
+        <a href="https://vvhy.art">ALL LINKS</a>
+      </nav>
+      <div class="footer-right">@vv4ste</div>
+    </footer>
+  </div>
+
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+
+  <script>
+    const canvas = document.getElementById('screen');
+    const ctx = canvas.getContext('2d', { alpha: true });
+    const bgCanvas0 = document.getElementById('bgScreen0');
+    const bgCtx0 = bgCanvas0.getContext('2d', { alpha: true });
+    const bgCanvas1 = document.getElementById('bgScreen1');
+    const bgCtx1 = bgCanvas1.getContext('2d', { alpha: true });
+    const bgCanvas2 = document.getElementById('bgScreen2');
+    const bgCtx2 = bgCanvas2.getContext('2d', { alpha: true });
+
+    const W = canvas.width;
+    const H = canvas.height;
+    const CX = Math.floor(W / 2);
+    const CY = Math.floor(H / 2);
+
+    const FPS = 30;
+    const FRAME_MS = 1000 / FPS;
+
+    const cubeSize = 38;
+    const cameraDistance = 158;
+    const perspective = 162;
+    const TRAIL_DELAY_MS = 200;
+
+    const baseVertices = [
+      [-1, -1, -1],
+      [ 1, -1, -1],
+      [ 1,  1, -1],
+      [-1,  1, -1],
+      [-1, -1,  1],
+      [ 1, -1,  1],
+      [ 1,  1,  1],
+      [-1,  1,  1],
+    ].map(([x, y, z]) => ({ x: x * cubeSize, y: y * cubeSize, z: z * cubeSize }));
+
+    const edges = [
+      [0,1],[1,2],[2,3],[3,0],
+      [4,5],[5,6],[6,7],[7,4],
+      [0,4],[1,5],[2,6],[3,7],
+    ];
+
+    const faces = [
+      { name: 'ABOUT', href: 'https://vvhy.art', indices: [4,5,6,7] },
+      { name: 'INSTAGRAM', href: 'https://www.instagram.com/vvhyami/', indices: [1,0,3,2] },
+      { name: 'YOUTUBE', href: 'hhttps://www.youtube.com/@vvhyami', indices: [5,1,2,6] },
+      { name: 'TIKTOK', href: 'https://www.tiktok.com/@vvhyami', indices: [0,4,7,3] },
+      { name: 'DISCORD', href: 'https://discord.gg/jgmZStGXeZ', indices: [0,1,5,4] },
+      { name: 'ALL LINKS', href: 'https://vvhy.art', indices: [7,6,2,3] },
+    ];
+
+    let rotX = -0.42;
+    let rotY = 0.7;
+
+    let velX = 0;
+    let velY = 0;
+    let idleTime = 0;
+
+    let isDragging = false;
+    let pointerId = null;
+    let lastX = 0;
+    let lastY = 0;
+    let lastMoveTime = 0;
+    let moved = false;
+    let downOnFace = null;
+    let lastFrame = 0;
+
+    const velocitySamples = [];
+    const maxSamples = 8;
+    let faceHitRegions = [];
+    const stateHistory = [];
+
+    function clamp(v, min, max) {
+      return Math.max(min, Math.min(max, v));
+    }
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
+    function rotatePoint(p, ax, ay) {
+      const cosY = Math.cos(ay);
+      const sinY = Math.sin(ay);
+      const x1 = p.x * cosY - p.z * sinY;
+      const z1 = p.x * sinY + p.z * cosY;
+
+      const cosX = Math.cos(ax);
+      const sinX = Math.sin(ax);
+      const y2 = p.y * cosX - z1 * sinX;
+      const z2 = p.y * sinX + z1 * cosX;
+
+      return { x: x1, y: y2, z: z2 };
+    }
+
+    function projectPoint(p) {
+      const z = p.z + cameraDistance;
+      const scale = perspective / z;
+      return {
+        x: Math.round(CX + p.x * scale),
+        y: Math.round(CY + p.y * scale),
+        z,
+      };
+    }
+
+    function drawLine(targetCtx, x0, y0, x1, y1) {
+      x0 = Math.round(x0);
+      y0 = Math.round(y0);
+      x1 = Math.round(x1);
+      y1 = Math.round(y1);
+
+      let dx = Math.abs(x1 - x0);
+      let sx = x0 < x1 ? 1 : -1;
+      let dy = -Math.abs(y1 - y0);
+      let sy = y0 < y1 ? 1 : -1;
+      let err = dx + dy;
+
+      while (true) {
+        targetCtx.fillRect(x0, y0, 1, 1);
+        if (x0 === x1 && y0 === y1) break;
+        const e2 = err * 2;
+        if (e2 >= dy) {
+          err += dy;
+          x0 += sx;
+        }
+        if (e2 <= dx) {
+          err += dx;
+          y0 += sy;
+        }
+      }
+    }
+
+    const glyphs = {
+      A: ['0110','1001','1111','1001','1001'],
+      B: ['1110','1001','1110','1001','1110'],
+      C: ['0111','1000','1000','1000','0111'],
+      D: ['1110','1001','1001','1001','1110'],
+      E: ['1111','1000','1110','1000','1111'],
+      G: ['0111','1000','1011','1001','0111'],
+      I: ['1111','0110','0110','0110','1111'],
+      K: ['1001','1010','1100','1010','1001'],
+      L: ['1000','1000','1000','1000','1111'],
+      M: ['1001','1111','1111','1001','1001'],
+      N: ['1001','1101','1111','1011','1001'],
+      O: ['0110','1001','1001','1001','0110'],
+      R: ['1110','1001','1110','1010','1001'],
+      S: ['0111','1000','0110','0001','1110'],
+      T: ['1111','0110','0110','0110','0110'],
+      U: ['1001','1001','1001','1001','1111'],
+      Y: ['1001','1001','0110','0110','0110'],
+    };
+
+    function measureTextPx(text, pixelSizeX = 1, gap = 1) {
+      let width = 0;
+      for (let i = 0; i < text.length; i++) {
+        width += 4 * pixelSizeX;
+        if (i < text.length - 1) width += gap;
+      }
+      return width;
+    }
+
+    function drawGlyph(targetCtx, ch, x, y, pixelSizeX = 1, pixelSizeY = 2) {
+      const glyph = glyphs[ch];
+      if (!glyph) return;
+      for (let row = 0; row < glyph.length; row++) {
+        for (let col = 0; col < glyph[row].length; col++) {
+          if (glyph[row][col] === '1') {
+            targetCtx.fillRect(x + col * pixelSizeX, y + row * pixelSizeY, pixelSizeX, pixelSizeY);
+          }
+        }
+      }
+    }
+
+    function drawTextPx(targetCtx, text, x, y, pixelSizeX = 1, pixelSizeY = 2, gap = 1) {
+      let cx = x;
+      for (const ch of text) {
+        if (ch === ' ') {
+          cx += 4 * pixelSizeX + gap;
+          continue;
+        }
+        drawGlyph(targetCtx, ch, cx, y, pixelSizeX, pixelSizeY);
+        cx += 4 * pixelSizeX + gap;
+      }
+    }
+
+    function polygonCenter(points) {
+      let x = 0;
+      let y = 0;
+      for (const p of points) {
+        x += p.x;
+        y += p.y;
+      }
+      return { x: x / points.length, y: y / points.length };
+    }
+
+    function pointInPolygon(px, py, points) {
+      let inside = false;
+      for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+        const xi = points[i].x, yi = points[i].y;
+        const xj = points[j].x, yj = points[j].y;
+        const intersect = ((yi > py) !== (yj > py)) &&
+          (px < ((xj - xi) * (py - yi)) / ((yj - yi) || 1e-6) + xi);
+        if (intersect) inside = !inside;
+      }
+      return inside;
+    }
+
+    function getFaceDepth(rotated, indices) {
+      return indices.reduce((sum, i) => sum + rotated[i].z, 0) / indices.length;
+    }
+
+    function getFaceNormal(rotated, indices) {
+      const a = rotated[indices[0]];
+      const b = rotated[indices[1]];
+      const c = rotated[indices[2]];
+      const ab = { x: b.x - a.x, y: b.y - a.y, z: b.z - a.z };
+      const ac = { x: c.x - a.x, y: c.y - a.y, z: c.z - a.z };
+      return {
+        x: ab.y * ac.z - ab.z * ac.y,
+        y: ab.z * ac.x - ab.x * ac.z,
+        z: ab.x * ac.y - ab.y * ac.x,
+      };
+    }
+
+    function currentHoveredFace(x, y) {
+      for (let i = 0; i < faceHitRegions.length; i++) {
+        if (pointInPolygon(x, y, faceHitRegions[i].points)) {
+          return faceHitRegions[i];
+        }
+      }
+      return null;
+    }
+
+    function recordState(now) {
+      stateHistory.push({ time: now, rotX, rotY });
+      const cutoff = now - 2000;
+      while (stateHistory.length > 2 && stateHistory[0].time < cutoff) {
+        stateHistory.shift();
+      }
+    }
+
+    function getDelayedState(now, delayMs) {
+      const target = now - delayMs;
+      if (!stateHistory.length) return { rotX, rotY };
+      if (target <= stateHistory[0].time) {
+        return { rotX: stateHistory[0].rotX, rotY: stateHistory[0].rotY };
+      }
+      for (let i = stateHistory.length - 1; i >= 1; i--) {
+        const newer = stateHistory[i];
+        const older = stateHistory[i - 1];
+        if (older.time <= target && target <= newer.time) {
+          const span = Math.max(1, newer.time - older.time);
+          const t = (target - older.time) / span;
+          return {
+            rotX: lerp(older.rotX, newer.rotX, t),
+            rotY: lerp(older.rotY, newer.rotY, t),
+          };
+        }
+      }
+      return { rotX, rotY };
+    }
+
+    function renderScene(targetCtx, drawLabels, state, clearWithBlack) {
+      if (clearWithBlack) {
+        targetCtx.fillStyle = '#000';
+        targetCtx.fillRect(0, 0, W, H);
+      } else {
+        targetCtx.clearRect(0, 0, W, H);
+      }
+      targetCtx.fillStyle = '#fff';
+
+      const rotated = baseVertices.map(v => rotatePoint(v, state.rotX, state.rotY));
+      const projected = rotated.map(projectPoint);
+
+      const visibleFaces = faces
+        .map(face => {
+          const normal = getFaceNormal(rotated, face.indices);
+          const isVisible = normal.z < 0;
+          const points = face.indices.map(i => ({ x: projected[i].x, y: projected[i].y }));
+          const depth = getFaceDepth(rotated, face.indices);
+          return { ...face, isVisible, points, depth };
+        })
+        .filter(face => face.isVisible)
+        .sort((a, b) => b.depth - a.depth);
+
+      if (drawLabels) {
+        faceHitRegions = [...visibleFaces].reverse();
+
+        targetCtx.fillStyle = '#000';
+        for (const face of visibleFaces) {
+          const pts = face.points;
+          targetCtx.beginPath();
+          targetCtx.moveTo(pts[0].x, pts[0].y);
+          for (let i = 1; i < pts.length; i++) targetCtx.lineTo(pts[i].x, pts[i].y);
+          targetCtx.closePath();
+          targetCtx.fill();
+        }
+        targetCtx.fillStyle = '#fff';
+      }
+
+      for (const [a, b] of edges) {
+        drawLine(targetCtx, projected[a].x, projected[a].y, projected[b].x, projected[b].y);
+      }
+
+      if (!drawLabels) return;
+
+      for (const face of visibleFaces) {
+        const center = polygonCenter(face.points);
+        const label = face.name;
+        const pixelSizeX = 1;
+        const pixelSizeY = 2;
+        const gap = 1;
+        const textW = measureTextPx(label, pixelSizeX, gap);
+        const textH = 5 * pixelSizeY;
+        const boxPadX = 3;
+        const boxPadY = 3;
+        const boxX = Math.round(center.x - textW / 2 - boxPadX);
+        const boxY = Math.round(center.y - textH / 2 - boxPadY);
+        const boxW = textW + boxPadX * 2;
+        const boxH = textH + boxPadY * 2;
+
+        targetCtx.fillStyle = '#000';
+        targetCtx.fillRect(boxX + 1, boxY + 1, Math.max(0, boxW - 1), Math.max(0, boxH - 1));
+        targetCtx.fillStyle = '#fff';
+
+        drawLine(targetCtx, boxX, boxY, boxX + boxW, boxY);
+        drawLine(targetCtx, boxX + boxW, boxY, boxX + boxW, boxY + boxH);
+        drawLine(targetCtx, boxX + boxW, boxY + boxH, boxX, boxY + boxH);
+        drawLine(targetCtx, boxX, boxY + boxH, boxX, boxY);
+
+        drawTextPx(
+          targetCtx,
+          label,
+          Math.round(center.x - textW / 2),
+          Math.round(center.y - textH / 2),
+          pixelSizeX,
+          pixelSizeY,
+          gap
+        );
+      }
+    }
+
+    function render(now) {
+      const live = { rotX, rotY };
+      const delayed1 = getDelayedState(now, TRAIL_DELAY_MS);
+      const delayed2 = getDelayedState(now, TRAIL_DELAY_MS * 2);
+
+      renderScene(bgCtx2, false, delayed2, false);
+      renderScene(bgCtx1, false, delayed1, false);
+      renderScene(bgCtx0, false, live, false);
+      renderScene(ctx, true, live, false);
+    }
+
+    function onPointerDown(e) {
+      if (e.button !== 0) return;
+      isDragging = true;
+      pointerId = e.pointerId;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      lastMoveTime = performance.now();
+      moved = false;
+      velocitySamples.length = 0;
+      canvas.classList.add('dragging');
+
+      const rect = canvas.getBoundingClientRect();
+      const sx = Math.floor((e.clientX - rect.left) * (W / rect.width));
+      const sy = Math.floor((e.clientY - rect.top) * (H / rect.height));
+      downOnFace = currentHoveredFace(sx, sy);
+
+      canvas.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    }
+
+    function onPointerMove(e) {
+      if (!isDragging || e.pointerId !== pointerId) return;
+
+      const now = performance.now();
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      const dt = Math.max(1, now - lastMoveTime);
+
+      if (Math.abs(dx) + Math.abs(dy) > 2) {
+        moved = true;
+      }
+
+      rotY += dx * 0.0105;
+      rotX += dy * 0.0105;
+
+      velocitySamples.push({
+        x: (dy * 0.0105) / dt * 16.67,
+        y: (dx * 0.0105) / dt * 16.67,
+      });
+      if (velocitySamples.length > maxSamples) velocitySamples.shift();
+
+      lastX = e.clientX;
+      lastY = e.clientY;
+      lastMoveTime = now;
+      e.preventDefault();
+    }
+
+    function onPointerUp(e) {
+      if (e.pointerId !== pointerId) return;
+
+      isDragging = false;
+      pointerId = null;
+      canvas.classList.remove('dragging');
+
+      if (velocitySamples.length) {
+        let sumX = 0;
+        let sumY = 0;
+        for (const s of velocitySamples) {
+          sumX += s.x;
+          sumY += s.y;
+        }
+        const avgX = sumX / velocitySamples.length;
+        const avgY = sumY / velocitySamples.length;
+        const speed = Math.hypot(avgX, avgY);
+        const flingThreshold = 0.065;
+
+        if (speed >= flingThreshold) {
+          velX = clamp(avgX * 1.25, -0.085, 0.085);
+          velY = clamp(avgY * 1.25, -0.085, 0.085);
+        } else {
+          velX = 0;
+          velY = 0;
+        }
+      }
+
+      const rect = canvas.getBoundingClientRect();
+      const sx = Math.floor((e.clientX - rect.left) * (W / rect.width));
+      const sy = Math.floor((e.clientY - rect.top) * (H / rect.height));
+      const upOnFace = currentHoveredFace(sx, sy);
+
+      if (!moved && downOnFace && upOnFace && downOnFace.name === upOnFace.name) {
+        window.location.href = downOnFace.href;
+      }
+
+      downOnFace = null;
+
+      try {
+        canvas.releasePointerCapture(e.pointerId);
+      } catch {}
+
+      e.preventDefault();
+    }
+
+    canvas.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove, { passive: false });
+    window.addEventListener('pointerup', onPointerUp, { passive: false });
+    window.addEventListener('pointercancel', onPointerUp, { passive: false });
+    canvas.addEventListener('dragstart', e => e.preventDefault());
+    canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+      if (!lastFrame) lastFrame = now;
+      const elapsed = now - lastFrame;
+      if (elapsed < FRAME_MS) return;
+      const dt = elapsed / 16.67;
+      lastFrame = now - (elapsed % FRAME_MS);
+
+      if (!isDragging) {
+        idleTime += elapsed;
+
+        const targetIdleVX = 0.0032 + Math.sin(idleTime * 0.00031 + 1.1) * 0.0009;
+        const targetIdleVY = 0.0072 + Math.sin(idleTime * 0.00019 + 0.4) * 0.0012;
+
+        rotX += velX * dt;
+        rotY += velY * dt;
+
+        velX = lerp(velX, targetIdleVX, 0.017 * dt);
+        velY = lerp(velY, targetIdleVY, 0.017 * dt);
+
+        if (Math.abs(velX - targetIdleVX) < 0.00012) velX = targetIdleVX;
+        if (Math.abs(velY - targetIdleVY) < 0.00012) velY = targetIdleVY;
+      } else {
+        idleTime = 0;
+      }
+
+      recordState(now);
+      render(now);
+    }
+
+    recordState(performance.now());
+    render(performance.now());
+    requestAnimationFrame(animate);
+
+    const titleText = 'vvhy.art';
+    let titleIndex = 0;
+    let titlePhase = 'typing';
+    let cursorVisible = true;
+    let blinkSteps = 0;
+
+    function renderTitle() {
+      const text = titleText.slice(0, titleIndex);
+      document.title = text + (cursorVisible ? '_' : '');
+    }
+
+    function tickTitle() {
+      if (titlePhase === 'typing') {
+        if (titleIndex < titleText.length) {
+          titleIndex += 1;
+          cursorVisible = true;
+          renderTitle();
+          setTimeout(tickTitle, 110);
+          return;
+        }
+        titlePhase = 'blink_full';
+        blinkSteps = 0;
+        setTimeout(tickTitle, 120);
+        return;
+      }
+
+      if (titlePhase === 'blink_full') {
+        if (blinkSteps < 4) {
+          cursorVisible = !cursorVisible;
+          blinkSteps += 1;
+          renderTitle();
+          setTimeout(tickTitle, 120);
+          return;
+        }
+        cursorVisible = true;
+        titlePhase = 'deleting';
+        renderTitle();
+        setTimeout(tickTitle, 18);
+        return;
+      }
+
+      if (titlePhase === 'deleting') {
+        if (titleIndex > 0) {
+          titleIndex -= 1;
+          cursorVisible = true;
+          renderTitle();
+          setTimeout(tickTitle, 18);
+          return;
+        }
+        titlePhase = 'blink_empty';
+        blinkSteps = 0;
+        setTimeout(tickTitle, 120);
+        return;
+      }
+
+      if (titlePhase === 'blink_empty') {
+        if (blinkSteps < 4) {
+          cursorVisible = !cursorVisible;
+          blinkSteps += 1;
+          renderTitle();
+          setTimeout(tickTitle, 120);
+          return;
+        }
+        cursorVisible = true;
+        titlePhase = 'typing';
+        renderTitle();
+        setTimeout(tickTitle, 110);
+      }
+    }
+
+    renderTitle();
+    setTimeout(tickTitle, 110);
+  </script>
+</body>
+</html>
