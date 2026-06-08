@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vvhy.art / about</title>
+  <link rel="icon" href="../favicon-placeholder.ico" />
+  <style>
+    :root {
+      --bg: #000;
+      --fg: #fff;
+      --muted: rgba(255,255,255,0.72);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: monospace;
+    }
+
+    body {
+      background: #000;
+      overflow-x: hidden;
+    }
+
+    .site {
+      position: relative;
+      width: 100vw;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      background: #000;
+    }
+
+    header,
+    footer {
+      position: relative;
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 26px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      line-height: 1;
+      pointer-events: auto;
+    }
+
+    header::after,
+    footer::before {
+      content: "";
+      position: absolute;
+      left: 26px;
+      right: 26px;
+      height: 1px;
+      background: rgba(255,255,255,0.16);
+    }
+
+    header::after {
+      bottom: 0;
+    }
+
+    footer::before {
+      top: 0;
+    }
+
+    .brand,
+    .status,
+    .footer-right {
+      white-space: nowrap;
+    }
+
+    .brand,
+    .status,
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .brand:hover,
+    .status:hover,
+    footer a:hover {
+      color: #fff;
+    }
+
+    .footer-left {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      max-width: min(72vw, 1000px);
+    }
+
+    .footer-right {
+      margin-left: 20px;
+      flex: 0 0 auto;
+    }
+
+    main {
+      position: relative;
+      display: grid;
+      align-items: start;
+      min-height: 0;
+      padding: clamp(42px, 7vw, 92px) 26px;
+      padding-left: clamp(26px, 16vw, 284px);
+    }
+
+    .about {
+      width: min(1220px, 100%);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .pixel-title {
+      --p: clamp(10px, 3.6vw, 28px);
+      display: flex;
+      gap: calc(var(--p) * 0.85);
+      margin: 0;
+      letter-spacing: 0;
+      line-height: 1;
+      filter:
+        drop-shadow(1px 0 rgba(0,90,255,0.55))
+        drop-shadow(-1px 0 rgba(255,40,40,0.4));
+    }
+
+    .pixel-letter {
+      position: relative;
+      display: block;
+      width: calc(var(--p) * 4);
+      height: calc(var(--p) * 5);
+      flex: 0 0 auto;
+    }
+
+    .pixel-letter::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: var(--p);
+      height: var(--p);
+      background: transparent;
+    }
+
+    .letter-a::before {
+      box-shadow:
+        calc(var(--p) * 1) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 1) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 1) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 1) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 3) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 3) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 4) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 4) #fff;
+    }
+
+    .letter-b::before {
+      box-shadow:
+        calc(var(--p) * 0) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 1) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 1) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 1) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 1) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 3) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 3) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 4) #fff,
+        calc(var(--p) * 1) calc(var(--p) * 4) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 4) #fff;
+    }
+
+    .letter-o::before {
+      box-shadow:
+        calc(var(--p) * 1) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 1) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 1) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 3) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 3) #fff,
+        calc(var(--p) * 1) calc(var(--p) * 4) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 4) #fff;
+    }
+
+    .letter-u::before {
+      box-shadow:
+        calc(var(--p) * 0) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 1) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 1) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 3) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 3) #fff,
+        calc(var(--p) * 0) calc(var(--p) * 4) #fff,
+        calc(var(--p) * 1) calc(var(--p) * 4) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 4) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 4) #fff;
+    }
+
+    .letter-t::before {
+      box-shadow:
+        calc(var(--p) * 0) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 1) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 3) calc(var(--p) * 0) #fff,
+        calc(var(--p) * 1) calc(var(--p) * 1) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 1) #fff,
+        calc(var(--p) * 1) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 2) #fff,
+        calc(var(--p) * 1) calc(var(--p) * 3) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 3) #fff,
+        calc(var(--p) * 1) calc(var(--p) * 4) #fff,
+        calc(var(--p) * 2) calc(var(--p) * 4) #fff;
+    }
+
+    .intro {
+      max-width: 68ch;
+      margin: clamp(28px, 5vw, 52px) 0 0;
+      color: rgba(255,255,255,0.86);
+      font-size: clamp(14px, 2vw, 18px);
+      line-height: 1.7;
+      letter-spacing: 0.08em;
+      text-transform: none;
+    }
+
+    .scanlines,
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .scanlines {
+      opacity: 0.12;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.08) 0px,
+        rgba(255,255,255,0.08) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+      mix-blend-mode: screen;
+    }
+
+    .vignette {
+      background: radial-gradient(circle at center, transparent 50%, rgba(0,0,0,0.42) 100%);
+    }
+
+    @media (max-width: 700px) {
+      header,
+      footer {
+        padding: 14px 16px;
+        font-size: 10px;
+        letter-spacing: 0.14em;
+      }
+
+      footer {
+        align-items: flex-start;
+        gap: 12px;
+        padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+      }
+
+      header::after,
+      footer::before {
+        left: 16px;
+        right: 16px;
+      }
+
+      main {
+        align-items: start;
+        padding: 38px 16px 42px;
+      }
+
+      .about {
+        letter-spacing: 0.12em;
+      }
+
+      .pixel-title {
+        --p: clamp(9px, 4vw, 15px);
+      }
+
+      .intro {
+        font-size: 13px;
+      }
+
+      .footer-left {
+        gap: 10px;
+        max-width: none;
+      }
+
+      .footer-right {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header>
+      <a class="brand" href="../vvhy-art-fixed-new-tabs.html">VVHY.ART</a>
+      <a class="status" href="https://www.instagram.com/vv4ste/" target="_blank" rel="noopener noreferrer">???</a>
+    </header>
+
+    <main>
+      <section class="about" aria-label="About vvhy.art">
+        <h1 class="pixel-title" aria-label="ABOUT">
+          <span class="pixel-letter letter-a" aria-hidden="true"></span>
+          <span class="pixel-letter letter-b" aria-hidden="true"></span>
+          <span class="pixel-letter letter-o" aria-hidden="true"></span>
+          <span class="pixel-letter letter-u" aria-hidden="true"></span>
+          <span class="pixel-letter letter-t" aria-hidden="true"></span>
+        </h1>
+        <p class="intro">
+          Placeholder text for the about page. This can become a short artist bio,
+          a note about the project, or a tiny archive of what vvhy.art is supposed
+          to feel like once the real words are ready.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <nav class="footer-left" aria-label="Footer links">
+        <a href="index.html">ABOUT</a>
+        <a href="https://www.instagram.com/vvhyami/" target="_blank" rel="noopener noreferrer">INSTAGRAM</a>
+        <a href="../youtube/index.html">YOUTUBE</a>
+        <a href="https://www.tiktok.com/@vvhyami" target="_blank" rel="noopener noreferrer">TIKTOK</a>
+        <a href="https://discord.gg/jgmZStGXeZ" target="_blank" rel="noopener noreferrer">DISCORD</a>
+        <a href="https://vvhy.art" target="_blank" rel="noopener noreferrer">ALL LINKS</a>
+      </nav>
+      <div class="footer-right">@vv4ste</div>
+    </footer>
+  </div>
+
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+</body>
+</html>
