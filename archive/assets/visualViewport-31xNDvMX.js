@@ -1,0 +1,1 @@
+let n=!1,r="";function i(){const t=window.visualViewport;if(!t)return;const e=`${(t.height*t.scale).toFixed(2)}px`;e!==r&&(r=e,document.documentElement.style.setProperty("--vvh",e))}function s(){if(n)return;n=!0;const t=window.visualViewport;t&&(t.addEventListener("resize",i),t.addEventListener("scroll",i),i())}export{s as t};

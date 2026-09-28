@@ -1,0 +1,26 @@
+/* Branding only: preserve the original masks, sizing, and scroll-driven scale. */
+#masked{-webkit-mask-image:url('/archive/assets/vv-mask.svg');mask-image:url('/archive/assets/vv-mask.svg')}
+#cross-blocker{-webkit-mask-image:url('/archive/assets/vv-mask.svg'),linear-gradient(#fff,#fff);mask-image:url('/archive/assets/vv-mask.svg'),linear-gradient(#fff,#fff)}
+#cross-mask:after{background-image:url('/archive/assets/vv-outline.svg')}
+.mask-off #masked{-webkit-mask-image:none;mask-image:none}
+.site-header__brand-img{width:44px;height:44px}
+
+/* Square cursor covers are enabled only while the opening screen is at the top. */
+#image-trail-cursor .content__img{aspect-ratio:1!important;border-radius:0!important}
+#image-trail-cursor .content__img-inner{inset:0!important;width:100%!important;height:100%!important}
+/* The wordmark now uses solid Gotham Bold outlines. */
+#cross-mask{transition:opacity .12s linear}
+
+.settings-panel__row:has(#player-vol),.settings-panel__row:has(#music-vol),.settings-panel__row:has(#sfx-vol),.settings-panel__row:has(#crossfade),.settings-panel__row:has(#autoplay-toggle){display:none}
+
+#vv-outline-stage{position:fixed;inset:0;z-index:4;display:grid;place-items:center;opacity:0;pointer-events:none;will-change:transform,opacity}#vv-outline-stage svg{width:100vmin;overflow:visible}.timeline-locked #vv-outline-stage{display:none}
+
+/* The signature and solid mark share one continuous zoom. */
+#cross-mask{transition:none}
+#vv-outline-stage svg{filter:drop-shadow(0 0 3px #b9d3cf55)}
+#vv-outline-stage path{stroke-dasharray:none;stroke-dashoffset:0}
+
+#vv-scroll-label{position:fixed;z-index:4;top:calc(50% + 16vmin);left:50%;transform:translateX(-50%);color:#888;font:10px/1.5 monospace;letter-spacing:.18em;white-space:nowrap;pointer-events:none}#vv-scroll-label span{display:block;text-align:center;margin-top:8px}.timeline-locked #vv-scroll-label{display:none}
+
+/* Only errors may show a timeline overlay; loading never presents an entry screen. */
+#timeline-help-overlay:not([data-state="error"]){display:none!important}
